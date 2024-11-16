@@ -1,38 +1,116 @@
-# Screen-Starter
-A simple Shell Script function to start a screen session and run a tool or program. 
+# Screen-Starter v2
+
+A Bash script to manage GNU `screen` sessions with logging, restart, and cleanup functionalities.
+
+## Features
+- **Start a new screen session**:
+  Automatically creates a detached `screen` session in a specified directory and runs a command.
+- **Logging**:
+  Tracks all started sessions in `.screensHistory.log` and active sessions in `.screensActive.log`.
+- **Restart sessions**:
+  Restart all active sessions listed in `.screensActive.log`.
+- **Remove sessions**:
+  Terminate all active sessions and clean up their temporary log files.
+- **Help menu**:
+  A detailed help option to guide usage.
+
+---
 
 ## Prerequisites
-screen (must be installed and available on your system)
+Ensure `screen` is installed and available on your system.
 
-### Download screen on Debian or Ubuntu:
-```
+### Install `screen` on Debian or Ubuntu:
+```sh
 sudo apt install screen
 ```
-### Download Screen On Arch:
-```
+
+### Install `screen` on Arch Linux:
+```sh
 sudo pacman -S screen
 ```
 
-# What does the function do?
-Starts a new detached screen session with a specified name, path, and command.
-    
-    This function checks for the correct number of arguments and verifies that the
-    specified directory exists. It ensures that a screen session with the given name
-    does not already exist, and if these conditions are met, it creates a new
-    detached screen session in the specified directory and runs the provided command.
-    The session's output is logged to a temporary file.
+---
 
-    Arguments:
-    screen_name (str): The name of the screen session to be created.
-    path (str): The directory path where the command should be executed.
-    command (str): The command to execute in the new screen session.
-
-    Returns:
-    int: Returns 1 if any error occurs (wrong number of arguments, non-existent directory,
-         existing screen session, or failure to start the session); otherwise, it provides
-         informative messages about the success or failure of the session creation.
-
-## How To Use: (Example)
+## Usage
+### 1. Start a new screen session:
 ```sh
-start_screen "screen_name" "path/to/directory" "command_to_run"
+./startScreen.sh <screen_name> <path> <command>
 ```
+- **`screen_name`**: Name of the screen session.
+- **`path`**: Directory where the command will execute.
+- **`command`**: Command to run in the screen session.
+
+Example:
+```sh
+./startScreen.sh my_session /home/user/project "python3 script.py"
+```
+
+### 2. Restart all active sessions:
+```sh
+./startScreen.sh -Re
+```
+- Reads `.screensActive.log`, terminates active sessions, and restarts them using the directory and command logged in `.screensHistory.log`.
+
+### 3. Remove all active sessions:
+```sh
+./startScreen.sh -rm
+```
+- Terminates all sessions listed in `.screensActive.log` and deletes related temporary logs.
+
+### 4. Display help menu:
+```sh
+./startScreen.sh -h
+```
+- Prints usage instructions and options.
+
+---
+
+## Logs
+1. **`.screensHistory.log`**:
+   - Tracks all screen sessions ever started with details of the directory and command.
+2. **`.screensActive.log`**:
+   - Tracks currently active screen sessions.
+
+Both log files are created in the script's directory.
+
+---
+
+## Key Features Explained
+- **Session Management**:
+  Automatically ensures no duplicate session names are created and validates paths before starting sessions.
+- **Temporary Logs**:
+  Each session's output is logged to `/tmp/<screen_name>.log` for easy debugging and monitoring.
+- **Automation**:
+  Restart or remove all active sessions with a single command.
+
+---
+
+## Example Scenarios
+1. **Start a screen session**:
+   ```sh
+   ./startScreen.sh my_server /var/www "npm start"
+   ```
+   This starts a session named `my_server` in `/var/www` and runs `npm start`.
+
+2. **Restart all sessions**:
+   ```sh
+   ./startScreen.sh -Re
+   ```
+   Restarts all active sessions, preserving the original command and directory.
+
+3. **Remove all sessions**:
+   ```sh
+   ./startScreen.sh -rm
+   ```
+   Terminates all active sessions and cleans up logs.
+
+---
+
+## Notes
+- Ensure proper permissions for the script and log files.
+- Always verify the validity of the directory and command arguments.
+
+---
+
+### Contribute
+Feel free to submit issues or pull requests to improve functionality or add features.
